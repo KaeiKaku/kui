@@ -7,7 +7,8 @@ import {
   map,
 } from 'rxjs';
 
-export type StrictType = string | number | boolean;
+type StrictType = string | number | boolean;
+
 export interface StatusObject {
   [key: string]: StatusObject | StrictType | StrictType[] | StatusObject[];
 }
@@ -55,6 +56,32 @@ export class StatusService {
     this._status.set(key, new BehaviorSubject(status));
   }
 
+  getStatusSnapshot(key: string, path?: string): StatusObject | undefined {
+    if (!this._status.has(key)) {
+      throw new Error('Status not exist.');
+    }
+    let resStatus: StatusObject | undefined;
+    if (path) {
+      this._status
+        .get(key)!
+        .pipe(first())
+        .subscribe((_) => {
+          const segmentStatus = this._fnGetValueByPath(_, path);
+          if (segmentStatus) {
+            resStatus = JSON.parse(JSON.stringify(segmentStatus));
+          }
+        });
+    } else {
+      this._status
+        .get(key)!
+        .pipe(first())
+        .subscribe((_) => {
+          resStatus = JSON.parse(JSON.stringify(_));
+        });
+    }
+    return resStatus;
+  }
+
   getStatus$(key: string, path?: string): Observable<StatusObject> {
     if (!this._status.has(key)) {
       throw new Error('Status not exist.');
@@ -62,15 +89,20 @@ export class StatusService {
     return this._status.get(key)!.pipe(
       map((_) => {
         const clone = JSON.parse(JSON.stringify(_));
-        if (path && this.fnGetValueByPath(clone, path)) {
-          return this.fnGetValueByPath(clone, path);
+        if (path) {
+          const segmentStatus = this._fnGetValueByPath(clone, path);
+          if (segmentStatus) {
+            return segmentStatus;
+          } else {
+            throw new Error('Incorrect status path.');
+          }
         } else {
           return clone;
         }
       }),
       distinctUntilChanged((previous, current) => {
         if (typeof previous === 'object' && typeof current === 'object') {
-          return this.fnDeepCompareObject(previous, current);
+          return this._fnDeepCompareObject(previous, current);
         } else {
           return previous == current;
         }
@@ -80,54 +112,69 @@ export class StatusService {
 
   patchStatus(
     key: string,
-    patchFn: (status: StatusObject) => StatusObject,
+    patchFn: (status: StatusObject) => StatusObject | StrictType,
+    path?: string,
     callback?: Function
   ): void {
-    this.getStatus$(key)
-      .pipe(first())
-      .subscribe((currentStatus: StatusObject) => {
-        const updatedStatus = patchFn(currentStatus);
-        if (
-          typeof updatedStatus === 'object' &&
-          typeof currentStatus === 'object'
-        ) {
-          if (
-            Object.keys(currentStatus).every((key) =>
-              Object.keys(updatedStatus).includes(key)
-            )
-          ) {
-            this._status.get(key)!.next(updatedStatus);
-            callback && callback();
-          } else {
-            throw new Error('The status being updated is incomplete.');
-          }
-        } else {
-          this._status.get(key)!.next(updatedStatus);
-          if (callback) callback();
-        }
-      });
+    let updatedStatus: StatusObject;
+    const currentStatus = this.getStatusSnapshot(key);
+    if (path) {
+      const segmentStatus = this._fnGetValueByPath(currentStatus, path);
+      if (segmentStatus) {
+        const updatedSegmentStatus = patchFn(segmentStatus);
+        this._fnGetValueByPath(currentStatus, path, updatedSegmentStatus);
+        updatedStatus = currentStatus!;
+      } else {
+        throw new Error('Incorrect status path.');
+      }
+    } else {
+      updatedStatus = patchFn(currentStatus!) as StatusObject;
+    }
+    // patch
+    if (
+      Object.keys(currentStatus!).every((key) =>
+        Object.keys(updatedStatus).includes(key)
+      )
+    ) {
+      this._status.get(key)!.next(updatedStatus as StatusObject);
+      callback && callback();
+    } else {
+      throw new Error('The status to be updated is incomplete.');
+    }
   }
 
-  fnGetValueByPath(status: any, path: string): any | undefined {
+  private _fnGetValueByPath(
+    status: any,
+    path: string,
+    updatedSegmentStatus: StatusObject | StrictType | undefined = undefined
+  ): any | undefined {
     const paths = path.split('.');
     const str = paths.shift();
     if (str && status.hasOwnProperty(str)) {
       if (paths.length > 0) {
-        return this.fnGetValueByPath(status[str], paths.join('.'));
+        return this._fnGetValueByPath(
+          status[str],
+          paths.join('.'),
+          updatedSegmentStatus
+        );
       } else {
-        return status[str];
+        if (updatedSegmentStatus) {
+          status[str] = updatedSegmentStatus;
+        } else {
+          return status[str];
+        }
       }
     } else {
       return undefined;
     }
   }
 
-  fnDeepCompareObject(t: any, u: any): boolean {
+  private _fnDeepCompareObject(t: any, u: any): boolean {
     if (t === u) {
       return true;
     }
 
-    if (!this.fnIsObject(t) || !this.fnIsObject(u)) {
+    if (!this._fnIsObject(t) || !this._fnIsObject(u)) {
       return false;
     }
 
@@ -145,10 +192,10 @@ export class StatusService {
 
       const valt = t[key];
       const valu = u[key];
-      const bothObject = this.fnIsObject(valt) && this.fnIsObject(valu);
+      const bothObject = this._fnIsObject(valt) && this._fnIsObject(valu);
 
       if (
-        (bothObject && !this.fnDeepCompareObject(valt, valu)) ||
+        (bothObject && !this._fnDeepCompareObject(valt, valu)) ||
         (!bothObject && valt !== valu)
       ) {
         return false;
@@ -158,7 +205,7 @@ export class StatusService {
     return true;
   }
 
-  fnIsObject(object: any): boolean {
+  private _fnIsObject(object: any): boolean {
     return object !== null && typeof object === 'object';
   }
 }
