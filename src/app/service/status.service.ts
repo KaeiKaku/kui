@@ -12,35 +12,6 @@ type StrictType = string | number | boolean;
 export interface StatusObject {
   [key: string]: StatusObject | StrictType | StrictType[] | StatusObject[];
 }
-export class Functor<T> {
-  constructor(value: T) {
-    this._value = value;
-  }
-
-  static of<T>(value: T) {
-    return new Functor<T>(value);
-  }
-
-  private _value: T;
-
-  private _isNothing(): boolean {
-    return this._value === null || this._value === undefined;
-  }
-
-  public join(): T {
-    return this._value;
-  }
-
-  public map<U>(fn: (param: T) => U) {
-    if (this._isNothing()) return Functor.of(undefined);
-    return Functor.of(fn(this._value));
-  }
-
-  public flatMap<U>(fn: (param: T) => U) {
-    if (this._isNothing()) return Functor.of(undefined);
-    return Functor.of(fn(this._value)).join();
-  }
-}
 
 @Injectable({
   providedIn: 'root',
@@ -143,6 +114,30 @@ export class StatusService {
     }
   }
 
+  fnAddStatusOption(
+    status: StatusObject,
+    option: { [key: string]: any }
+  ): StatusObject {
+    if (status) {
+      for (const key in status) {
+        const _ = status[key] as StatusObject;
+        if (typeof _ === 'object') {
+          this.fnAddStatusOption(_, option);
+        } else {
+          status[key] = {
+            value: _,
+            ...option,
+          };
+        }
+      }
+    }
+    return status;
+  }
+
+  private _fnIsObject(object: any): boolean {
+    return object !== null && typeof object === 'object';
+  }
+
   private _fnGetValueByPath(
     status: any,
     path: string,
@@ -203,9 +198,5 @@ export class StatusService {
     }
 
     return true;
-  }
-
-  private _fnIsObject(object: any): boolean {
-    return object !== null && typeof object === 'object';
   }
 }

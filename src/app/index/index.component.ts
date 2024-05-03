@@ -11,5 +11,7 @@ import { AdminComponent } from '../admin/admin.component';
 })
 export class IndexComponent implements OnInit {
   constructor(private statusService: StatusService) {}
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // this.statusService.getStatus$('x').subscribe(console.log);
+  }
 }

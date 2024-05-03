@@ -13,6 +13,7 @@ export class AppComponent {
   title = 'kui';
   constructor(private statusService: StatusService) {
     // const config: StatusObject = {
+    //   hello: 'string hello',
     //   person: {
     //     name: 'Alice',
     //     age: 25,
