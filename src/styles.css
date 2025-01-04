@@ -4,21 +4,49 @@
   scroll-behavior: smooth;
   --font-family: "Fira Code", "Consolas", "Menlo", "Courier New", "Roboto Mono",
     "Monaco", "Noto Sans Mono", monospace;
+  interpolate-size: allow-keywords;
 }
 
 *,
 *::before,
 *::after {
-  box-sizing: inherit;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 html {
   font-family: var(--font-family);
-  line-height: 1.5;
+  line-height: 1;
   /* Aspect ratio */
 }
 
-body {
+ul,
+ol {
+  list-style-type: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+button,
+textarea,
+select,
+input {
+  field-sizing: content;
+  outline: none;
 }
