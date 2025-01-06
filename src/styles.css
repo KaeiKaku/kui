@@ -2,6 +2,7 @@
 :root {
   box-sizing: border-box;
   scroll-behavior: smooth;
+  overscroll-behavior: contain;
   --font-family: "Fira Code", "Consolas", "Menlo", "Courier New", "Roboto Mono",
     "Monaco", "Noto Sans Mono", monospace;
   interpolate-size: allow-keywords;
@@ -50,3 +51,39 @@ input {
   field-sizing: content;
   outline: none;
 }
+
+details {
+  ::marker {
+    content: "";
+  }
+  ::details-content {
+    transition: all 0.5s;
+  }
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* ######### */
+/* Scroll-driven animations */
+/* .anchor_container {
+  overflow: overlay;
+  position: relative;
+  .anchor {
+    width: fit-content;
+    font-size: 10rem;
+    background-color: yellow;
+    anchor-name: --my-anchor;
+    anchor-scope: --my-anchor;
+    .popover {
+      font-size: 1rem;
+      background-color: aquamarine;
+      position: absolute;
+      position-anchor: --my-anchor;
+      position-area: top right;
+      position-try: most-width flip-block, flip-inline, flip-start;
+      position-visibility: no-overflow;
+    }
+  }
+} */
