@@ -1,0 +1,104 @@
+:host {
+  display: block;
+  width: calc(100% - var(--menu-width));
+  transition: width 0.5s;
+  @media (max-width: 1060px) {
+    width: 100%;
+    transition: width 0.5s ease-in-out;
+  }
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  div.header {
+    height: 4rem;
+    background-color: blueviolet;
+  }
+  div.body {
+    height: calc(100dvh - 6rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    div.chat-box-container {
+      width: var(--chatbox-width);
+      height: 100%;
+      display: flex;
+      flex-direction: column-reverse;
+      overflow: overlay;
+      transition: height 0.5s ease-in-out;
+      p,
+      pre {
+        width: calc(var(--chatbox-width) - var(--svg-rem));
+        line-height: 1.5;
+        user-select: text;
+        * {
+          user-select: text;
+        }
+      }
+      section {
+        margin: 0.5rem 0;
+      }
+      section.user {
+        height: max-content;
+        display: flex;
+        justify-content: flex-end;
+        p {
+          padding: 1rem;
+          max-width: 80%;
+          margin-right: 0.5rem;
+          border-width: 1px;
+          border-radius: 0.5rem;
+          box-shadow: 0 0 0.5rem var(--border-color);
+        }
+      }
+      section.ai {
+        display: flex;
+        justify-content: flex-start;
+        svg {
+          fill: none;
+        }
+        pre {
+          white-space: pre-wrap;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+          margin-left: 0.5rem;
+        }
+      }
+    }
+    div.editor {
+      width: var(--chatbox-width);
+      max-height: var(--textarea-max-height);
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      border-width: 1px;
+      border-radius: 0.5rem;
+      box-shadow: 0 0 0.5rem var(--border-color);
+      transition: height 0.5s ease-in-out;
+      div.textarea-container {
+        min-height: 1rem;
+        display: flex;
+        textarea {
+          width: calc(100% - var(--svg-rem));
+          white-space: pre-wrap;
+          word-wrap: break-word;
+          line-height: 1.5rem;
+          resize: none;
+        }
+        section.textarea-option {
+          width: var(--svg-rem);
+          height: 100%;
+        }
+      }
+      section.editor-option {
+        height: calc(2 * var(--svg-rem));
+      }
+    }
+  }
+  div.footer {
+    height: 2rem;
+    /* background-color: brown; */
+  }
+}

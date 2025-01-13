@@ -1,0 +1,46 @@
+:host {
+  display: block;
+  width: var(--menu-width);
+  height: 100dvh;
+  overflow: hidden;
+  transition: width 0.5s;
+  @media (max-width: 1060px) {
+    width: 0;
+    transition: width 0.5s;
+  }
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  div.header {
+    height: 4rem;
+    background-color: aqua;
+  }
+  div.body {
+    height: calc(100dvh - 4rem);
+    overflow: overlay;
+    background-color: bisque;
+    section.folder {
+      padding: 1rem;
+      details {
+        border-radius: 0.5rem;
+        background-color: white;
+        summary {
+          padding-left: 0.5rem;
+          line-height: 2;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          cursor: pointer;
+          &:hover {
+            background-color: gray;
+          }
+        }
+        div.subfolder {
+          padding: 0.5rem;
+        }
+      }
+    }
+  }
+}

@@ -3,21 +3,34 @@
   box-sizing: border-box;
   scroll-behavior: smooth;
   overscroll-behavior: contain;
-  --font-family: "Fira Code", "Consolas", "Menlo", "Courier New", "Roboto Mono",
-    "Monaco", "Noto Sans Mono", monospace;
+  --font-family: "Fira Code", "Noto Sans Mono", "Consolas", "Menlo";
   interpolate-size: allow-keywords;
+  /* color */
+  --menu-width: 260px;
+  --chatbox-width: 800px;
+  --textarea-max-height: 300px;
+  --svg-rem: 24px;
+  --yellow-ey: #ffe600;
+  --gray-ey: #2e2e38;
+  --gray-900: #171717;
+  --gray-700: #424242;
+  --border-color: #e3e3e3;
 }
 
 *,
 *::before,
 *::after {
+  font-family: var(--font-family);
   margin: 0;
   padding: 0;
+  user-select: none;
   box-sizing: border-box;
+  scrollbar-color: var(--gray-700) transparent;
+  border: 0 solid var(--border-color);
 }
 
 html {
-  font-family: var(--font-family);
+  font-size: 14px;
   line-height: 1;
   /* Aspect ratio */
 }
@@ -29,6 +42,11 @@ ol {
 
 a {
   text-decoration: none;
+}
+
+svg {
+  width: var(--svg-rem);
+  height: var(--svg-rem);
 }
 
 table {
@@ -53,11 +71,11 @@ input {
 }
 
 details {
+  height: max-content;
+  overflow: hidden;
+  transition: all 0.5s ease-in-out;
   ::marker {
     content: "";
-  }
-  ::details-content {
-    transition: all 0.5s;
   }
 }
 
