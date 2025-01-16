@@ -1,1 +1,20 @@
+@defer (when _configLoaded){
 <router-outlet />
+} @placeholder {
+<div class="loading_container">
+  @if (_is_checking_authorized) {
+  <ng-container>
+    <p class="loading-text">
+      現在アカウントの権限の確認中、少々お待ちください。
+    </p>
+    <div class="loading-bar"></div>
+  </ng-container>
+  } @else {
+  <ng-container>
+    <p class="loading-text">
+      申し訳ございませんが、このアカウントにはアクセス権限がありません。QABOTの管理者に連絡してください。
+    </p>
+  </ng-container>
+  }
+</div>
+}

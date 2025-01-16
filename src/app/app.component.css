@@ -1,0 +1,44 @@
+div.loading_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100dvh;
+  margin: 0;
+  background-color: #f5f5f5;
+  font-family: Arial, sans-serif;
+}
+div.loading_container > div.loading-bar {
+  width: 20dvw;
+  height: 10px;
+  background-color: rgba(142, 142, 160, 1);
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 10px;
+}
+div.loading_container > div.loading-bar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20%;
+  height: 100%;
+  background-color: rgba(250, 231, 77, 1);
+  animation: loading 1s infinite;
+}
+
+@keyframes loading {
+  0% {
+    left: 0;
+    width: 20%;
+  }
+  50% {
+    left: 50%;
+    width: 50%;
+  }
+  100% {
+    left: 100%;
+    width: 20%;
+  }
+}

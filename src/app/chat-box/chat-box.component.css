@@ -1,10 +1,8 @@
 :host {
   display: block;
   width: calc(100% - var(--menu-width));
-  transition: width 0.5s;
   @media (max-width: 1060px) {
     width: 100%;
-    transition: width 0.5s ease-in-out;
   }
 }
 
@@ -99,6 +97,5 @@ main {
   }
   div.footer {
     height: 2rem;
-    /* background-color: brown; */
   }
 }

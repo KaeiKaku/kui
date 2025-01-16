@@ -4,11 +4,11 @@ import { ChatComponent } from './chat/chat.component';
 
 export const routes: Routes = [
   {
-    path: '',
-    component: HomeComponent,
-  },
-  {
     path: 'general',
     component: ChatComponent,
+  },
+  {
+    path: '**',
+    component: HomeComponent,
   },
 ];
