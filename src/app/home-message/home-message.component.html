@@ -1,0 +1,30 @@
+<main>
+  <section class="home-message">
+    <h2>{{ kui$ | async }}</h2>
+    <ul>
+      <li>質問等の入力</li>
+      <ul>
+        <li>「ENTER」もしくは▷をクリック送信</li>
+        <li>「SHIFT + ENTER」改行</li>
+        <!-- <li>「↑」「↓」送信履歴</li> -->
+      </ul>
+      <li>回答の根拠</li>
+      <ul>
+        <li>
+          キーワードとの類似度（Similarity）とあわせ対象の根拠となった文書を示します。リンクをクリックすると回答の元となった文書を確認することができます。
+        </li>
+      </ul>
+
+      <li>QABot Link</li>
+      <ul>
+        @for (page of qabot_page_list; track $index) {
+        <li>
+          <a [routerLink]="['/' + (page | parseObj).key]">{{
+            (page | parseObj).key
+          }}</a>
+        </li>
+        }
+      </ul>
+    </ul>
+  </section>
+</main>

@@ -17,19 +17,23 @@ export class ChatgptService {
     );
   }
 
-  getConfig(): Observable<any> {
+  get_ng_config(): Observable<any> {
+    return this.http.get(`/configuration/status.json`);
+  }
+
+  get_config(): Observable<any> {
     return this.http.get(`${this._currentApiUrl}/configuration`);
   }
 
-  ask(url: string, data: any): Observable<any> {
-    return this.http.post(url, { data });
-  }
+  // ask(url: string, data: any): Observable<any> {
+  //   return this.http.post(url, { data });
+  // }
 
-  comment(url: string, data: any): Observable<any> {
-    return this.http.post(url, data, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      }),
-    });
-  }
+  // comment(url: string, data: any): Observable<any> {
+  //   return this.http.post(url, data, {
+  //     headers: new HttpHeaders({
+  //       'Content-Type': 'application/json',
+  //     }),
+  //   });
+  // }
 }

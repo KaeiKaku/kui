@@ -37,7 +37,10 @@ html {
 
 ul,
 ol {
-  list-style-type: none;
+  padding-inline-start: 1rem;
+  li {
+    line-height: 1.5rem;
+  }
 }
 
 a {

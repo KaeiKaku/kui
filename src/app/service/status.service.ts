@@ -21,7 +21,7 @@ export class StatusService {
     return JSON.parse(JSON.stringify(this._status.getValue()));
   }
 
-  get_status(path?: string): Observable<Record<string, any>> {
+  get_status$(path?: string): Observable<Record<string, any>> {
     const source$ = this._status!.asObservable();
 
     if (!path) {
@@ -40,6 +40,29 @@ export class StatusService {
     );
   }
 
+  get_status_list(path?: string): Record<string, any>[] {
+    const full_status_list = Object.entries(this.status).map(
+      ([key, value]) => ({
+        [key]: value,
+      })
+    );
+
+    if (!path) {
+      return full_status_list;
+    }
+
+    const record = this._get_patch_value_bypath(this.status, path);
+    if (typeof record === 'object') {
+      return Object.entries(
+        this._get_patch_value_bypath(this.status, path)
+      ).map(([key, value]) => ({
+        [key]: value,
+      }));
+    } else {
+      return [];
+    }
+  }
+
   patch_status(path: string, patch_value: any) {
     const new_status = { ...this.status };
     this._get_patch_value_bypath(new_status, path, patch_value);
@@ -53,6 +76,8 @@ export class StatusService {
     path: string,
     updated_Status: any = undefined
   ): any | undefined {
+    if (typeof path !== 'string') throw new Error('invalid path string.');
+
     const paths = path.split('.');
     const str = paths.shift();
     // Handle invalid path or missing property, return undefined directly
@@ -68,28 +93,17 @@ export class StatusService {
       );
     }
     // If there is an update status, handle the update logic
-    if (updated_Status) {
-      if (
-        typeof status_record[str] === 'object' &&
-        typeof updated_Status === 'object'
-      ) {
-        // Validate all keys in the update status exist in the target object
-        for (const key of Object.keys(updated_Status)) {
-          if (!(key in status_record[str])) {
-            throw new Error(
-              `Property ${key} does not exist on the target object`
-            );
-          }
-        }
-        // Merge objects if validation passes
-        status_record[str] = { ...status_record[str], ...updated_Status };
-      } else {
-        // If the target is not an object, overwrite directly
-        status_record[str] = updated_Status;
-      }
-    } else {
-      // If no update status is provided, return the target value
+    if (!updated_Status) {
       return status_record[str];
+    }
+    // update logic
+    if (typeof status_record[str] === 'object') {
+      typeof updated_Status === 'object'
+        ? (status_record[str] = { ...status_record[str], ...updated_Status })
+        : status_record[str];
+    } else {
+      // If the target is not an object, overwrite directly
+      status_record[str] = updated_Status;
     }
   }
 }

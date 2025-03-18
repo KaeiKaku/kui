@@ -1,11 +1,25 @@
 <main>
   <div class="header">
-    <h3>title</h3>
+    <img src="ey_logo.png" alt="image" />
+    <section class="title" *ngIf="kui$ | async as kui">
+      <h3>{{ kui["name"] }}</h3>
+      <h4 *ngIf="qabot_page_list.length > 0">
+        {{ qabot_page_list[0]["page_title"] }}
+      </h4>
+    </section>
   </div>
   <div class="body">
-    <section class="folder">
-      <details>
-        <summary>Folder</summary>
+    @for (category of qabot_category_list; track $index) {
+    <section class="category">
+      <details *ngIf="kui$ | async as kui">
+        <summary
+          [routerLink]="[
+            '/' + kui['current_page'] + '/' + (category | parseObj).key
+          ]"
+          routerLinkActive="active"
+        >
+          {{ (category | parseObj).key }}
+        </summary>
         <div class="subfolder"><p>subfolder1</p></div>
         <div class="subfolder"><p>subfolder2</p></div>
         <div class="subfolder"><p>subfolder3</p></div>
@@ -14,5 +28,6 @@
         <div class="subfolder"><p>subfolder6</p></div>
       </details>
     </section>
+    }
   </div>
 </main>

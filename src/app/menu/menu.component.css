@@ -15,30 +15,64 @@ main {
   flex-direction: column;
   div.header {
     height: 4rem;
-    background-color: aqua;
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    background-color: var(--gray-900);
+    color: white;
+    img {
+      width: 28px;
+      height: 28px;
+    }
+    section.title {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      h3 {
+        margin-left: 0.5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      h4 {
+        margin-left: 0.5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
   }
   div.body {
     height: calc(100dvh - 4rem);
     overflow: overlay;
-    background-color: bisque;
-    section.folder {
-      padding: 1rem;
+    background-color: var(--gray-900);
+    section.category {
       details {
-        border-radius: 0.5rem;
-        background-color: white;
+        padding: 0 1rem;
         summary {
-          padding-left: 0.5rem;
+          border-radius: 0.5rem;
+          padding: 0.5rem;
+          color: white;
           line-height: 2;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
           cursor: pointer;
           &:hover {
-            background-color: gray;
+            background-color: var(--gray-ey);
+          }
+          &.active {
+            background-color: var(--yellow-ey);
+            color: unset;
+          }
+          summary.active:hover {
+            background-color: unset;
           }
         }
         div.subfolder {
           padding: 0.5rem;
+          color: white;
         }
       }
     }
