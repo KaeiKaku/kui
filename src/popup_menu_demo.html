@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>纯CSS下拉菜单</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 50px;
+      background: #f8f8f8;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown input[type="checkbox"] {
+      display: none;
+    }
+
+    .dropdown label {
+      background-color: #3498db;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      position: absolute;
+      top: 110%;
+      left: 0;
+      background-color: white;
+      min-width: 160px;
+      border: 1px solid #ddd;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border-radius: 6px;
+      overflow: hidden;
+      display: none;
+      flex-direction: column;
+    }
+
+    .dropdown-content a {
+      padding: 10px 14px;
+      text-decoration: none;
+      color: #333;
+      display: block;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #f0f0f0;
+    }
+
+    /* 显示菜单 */
+    .dropdown input:checked ~ .dropdown-content {
+      display: flex;
+    }
+  </style>
+</head>
+<body>
+
+<div class="dropdown">
+  <input type="checkbox" id="toggle-menu">
+  <label for="toggle-menu">📋 打开菜单</label>
+  <div class="dropdown-content">
+    <a href="#">菜单项 1</a>
+    <a href="#">菜单项 2</a>
+    <a href="#">菜单项 3</a>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>纯CSS弹窗</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-toggle {
+      display: none;
+    }
+
+    .open-button {
+      padding: 12px 20px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    /* 背景遮罩 */
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      z-index: 100;
+    }
+
+    /* 弹窗样式 */
+    .modal-box {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50vw;
+      height: 50vh;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      padding: 20px;
+      display: none;
+      z-index: 101;
+    }
+
+    /* 弹窗顶部关闭按钮 */
+    .modal-box .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 16px;
+      font-size: 20px;
+      color: #999;
+      cursor: pointer;
+    }
+
+    /* 显示弹窗和背景 */
+    .modal-toggle:checked ~ .modal-backdrop,
+    .modal-toggle:checked ~ .modal-box {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<!-- 控制按钮（隐藏的checkbox） -->
+<input type="checkbox" id="modal-toggle" class="modal-toggle">
+
+<!-- 打开按钮 -->
+<label for="modal-toggle" class="open-button">打开弹窗</label>
+
+<!-- 背景遮罩 -->
+<label for="modal-toggle" class="modal-backdrop"></label>
+
+<!-- 弹窗 -->
+<div class="modal-box">
+  <label for="modal-toggle" class="close-btn">&times;</label>
+  <h2>弹窗标题</h2>
+  <p>这是一个纯 CSS 实现的弹窗。你可以放任何内容在这里。</p>
+</div>
+
+</body>
+</html>

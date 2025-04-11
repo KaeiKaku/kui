@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>美化树形菜单</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      padding: 30px;
+      background: #f5f5f5;
+    }
+
+    .tree {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 400px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .tree ul {
+      list-style-type: none;
+      padding-left: 20px;
+      margin: 0;
+    }
+
+    .tree li {
+      position: relative;
+      margin: 6px 0;
+    }
+
+    .tree input[type="checkbox"] {
+      display: none;
+    }
+
+    .tree label {
+      cursor: pointer;
+      padding-left: 20px;
+      position: relative;
+      display: inline-block;
+      transition: background 0.2s;
+    }
+
+    .tree label:hover {
+      background: #eee;
+      border-radius: 4px;
+    }
+
+    /* 展开/收起图标 */
+    .tree label::before {
+      content: "➕";
+      position: absolute;
+      left: 0;
+      top: 0;
+      transition: transform 0.2s;
+    }
+
+    .tree input[type="checkbox"]:checked + label::before {
+      content: "➖";
+    }
+
+    /* 文件夹图标 */
+    .tree label::after {
+      content: "📁";
+      margin-left: 8px;
+    }
+
+    /* 控制子菜单的展开动画 */
+    .tree input[type="checkbox"] ~ ul {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+    }
+
+    .tree input[type="checkbox"]:checked ~ ul {
+      max-height: 500px;
+      transition: max-height 0.5s ease-in;
+    }
+
+    /* 文件项样式 */
+    .tree ul ul li::before {
+      content: "📄";
+      margin-right: 8px;
+    }
+
+    .tree ul ul label::after {
+      content: none;
+    }
+  </style>
+</head>
+<body>
+<div class="tree">
+  <ul>
+    <li>
+      <input type="checkbox" id="node1">
+      <label for="node1">根目录</label>
+      <ul>
+        <li>
+          <input type="checkbox" id="node1-1">
+          <label for="node1-1">子目录1</label>
+          <ul>
+            <li>子项1.1</li>
+            <li>子项1.2</li>
+          </ul>
+        </li>
+        <li>
+          <input type="checkbox" id="node1-2">
+          <label for="node1-2">子目录2</label>
+          <ul>
+            <li>子项2.1</li>
+            <li>子项2.2</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+</body>
+</html>
