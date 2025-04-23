@@ -89,17 +89,16 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.add(
       this.selected$.subscribe((selected) => {
-        console.log(selected);
-        // ConsentNotice
-        if (!window.sessionStorage.getItem('hasConsentNotice')) {
-          this.modalService.open(ConsentNoticeComponent, {
-            width: '60%',
-            maxHeight: '80%',
-            closeOnBackdropClick: false,
-          });
-        }
-
         if (selected && selected['category']) {
+          // ConsentNotice
+          if (!window.sessionStorage.getItem('hasConsentNotice')) {
+            this.modalService.open(ConsentNoticeComponent, {
+              width: '60%',
+              maxHeight: '80%',
+              closeOnBackdropClick: false,
+            });
+          }
+
           this.is_sendReady = true;
           this.selected_obj = this.parseObjPipe.transform(
             selected['category']
