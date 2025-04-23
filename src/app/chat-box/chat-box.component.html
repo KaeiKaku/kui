@@ -1,30 +1,227 @@
 <main>
-  <div class="header">header</div>
+  <app-chat-header-msg></app-chat-header-msg>
   <div class="body">
-    <div class="chat-box-container">
-      <section class="ai">
-        <svg>
-          <use xlink:href="svg/general.svg#brain-out"></use>
-        </svg>
-        <pre>
-ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答ai回答
-        </pre>
-      </section>
-      <section class="user">
-        <p>
-          user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題user問題
-        </p>
-        <svg>
-          <use xlink:href="svg/user.svg#user-circle"></use>
-        </svg>
-      </section>
-    </div>
-    <div class="editor">
-      <div class="textarea-container">
-        <textarea></textarea>
-        <section class="textarea-option"></section>
+    <div class="chat-box-container" #chat_box_container>
+      <div
+        class="chat-box"
+        *ngFor="let chat_content of chat_contents; let i = index"
+      >
+        <!-- ai -->
+        <section class="ai">
+          <div class="content">
+            <img src="ai.png" />
+            <ng-container *ngIf="chat_content.is_loading; else pre">
+              <div class="loading">
+                <div class="dots_loading"></div>
+              </div>
+            </ng-container>
+            <ng-template #pre>
+              <pre
+                #pre
+                class="markdown-body"
+                [innerHTML]="chat_content.answer | mdToHtml"
+              ></pre>
+            </ng-template>
+          </div>
+          <!-- brainhub content -->
+          <div *ngIf="chat_content.has_inquiry_page">
+            🔸さらにサポートが必要な場合は、問い合わせページをご参照ください。
+            <!-- _currentCategoryStatus?.inquiry_page -->
+            <a [href]="selected_obj.inquiry_page" target="_blank"
+              >👉問い合わせページ🔗
+            </a>
+          </div>
+          <div *ngIf="chat_content.mailto">
+            🔸さらにサポートが必要な場合は、メールにてご連絡いただけます
+            <a
+              href="javascript:void(0)"
+              (click)="
+                popupMailtemplate(chat_content['query'], chat_content['answer'])
+              "
+              >👉問い合わせメールドラフトを作成✉️
+            </a>
+          </div>
+          <!-- feedback -->
+          <div class="feedback" *ngIf="chat_content.responseId">
+            <a
+              [ngClass]="{ active: chat_content.goodOrBad == 'good' }"
+              (click)="feedback(chat_content, 'good')"
+              >👍</a
+            >
+            <a
+              [ngClass]="{ active: chat_content.goodOrBad == 'bad' }"
+              (click)="feedback(chat_content, 'bad')"
+              >😞</a
+            >
+            <a (click)="commentBox.classList.remove('inactive')">📝</a>
+          </div>
+          <!-- comment box -->
+          <div #commentBox class="comment inactive">
+            <textarea
+              #commentTextarea
+              placeholder="感想、改善要望等あればコメント投稿ください。"
+              [(ngModel)]="chat_content.comment"
+            ></textarea>
+            <div
+              class="action"
+              [ngClass]="{ inactive: commentTextarea.disabled }"
+            >
+              <button
+                class="cancel"
+                (click)="commentBox.classList.add('inactive')"
+              >
+                cancel
+              </button>
+              <button
+                class="submit"
+                (click)="feedback(chat_content, null, commentTextarea)"
+              >
+                submit
+              </button>
+            </div>
+          </div>
+        </section>
+        <!-- user -->
+        <section class="user">
+          <div class="content">
+            <pre [innerHTML]="chat_content.query"></pre>
+            <img src="user.png" />
+          </div>
+        </section>
       </div>
-      <section class="editor-option"></section>
+    </div>
+    <!-- editor -->
+    <div class="editor" *ngIf="selected_obj">
+      <div class="textarea-container" #textarea_container>
+        <textarea
+          id="chat-box-textarea"
+          placeholder="Send a message..."
+          #textarea
+        ></textarea>
+      </div>
+      <section class="editor-option">
+        <div class="dropdown">
+          <label (click)="resetSessionToken()">🗑️Clear</label>
+        </div>
+        <!-- dropdown options -->
+        <div class="dropdown">
+          <input type="checkbox" id="toggle-options" />
+          <label for="toggle-options">⚙️Options</label>
+          <div class="dropdown-content">
+            <!-- gpt model -->
+            <section>
+              <p>GPT model</p>
+              <label>
+                <input
+                  type="radio"
+                  name="options_model"
+                  [(ngModel)]="options_model"
+                  value="GPT-4.1"
+                />
+                GPT-4.1
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="options_model"
+                  [(ngModel)]="options_model"
+                  value="o1"
+                />
+                o1
+              </label>
+              <label
+                ><input
+                  type="radio"
+                  name="options_model"
+                  [(ngModel)]="options_model"
+                  value="o3-mini"
+                />
+                o3-mini</label
+              >
+            </section>
+            <!-- Reference Type -->
+            <section>
+              <p>Reference Type</p>
+              <label>
+                <input
+                  type="radio"
+                  name="options_reference"
+                  [(ngModel)]="options_reference"
+                  [value]="false"
+                  [disabled]="!selected_obj['number_of_chunks_per_folder']"
+                />
+                選択フォルダを統合して情報抽出
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="options_reference"
+                  [(ngModel)]="options_reference"
+                  [value]="true"
+                  [disabled]="!selected_obj['number_of_chunks_per_folder']"
+                />
+                選択フォルダから均等に情報抽出
+              </label>
+            </section>
+            <!-- Question Mode -->
+            <section>
+              <p>Question Mode</p>
+              <label>
+                <input
+                  type="checkbox"
+                  name="options_quiz"
+                  [(ngModel)]="options_quiz"
+                  [disabled]="!selected_obj['api_suffix_quiz']"
+                />
+                Question Generator
+              </label>
+            </section>
+          </div>
+        </div>
+        <!-- dropdown Browser -->
+        <div class="dropdown">
+          <label class="inactive">🌐Browser</label>
+        </div>
+        <!-- dropdown MCP -->
+        <div class="dropdown">
+          <label class="inactive">🛠️MCP</label>
+        </div>
+        <!-- dropdown upload -->
+        <div class="dropdown">
+          <input
+            type="file"
+            accept=".jpg, .jpeg, .jfif, .png, .gif, .webp, .bmp, .svg, .ico"
+            id="file-upload"
+            multiple
+            #imageInput
+            (change)="handleImages($event)"
+            [disabled]="!selected_obj['upload']"
+          />
+          <label
+            for="file-upload"
+            [ngClass]="{ inactive: !selected_obj['upload'] }"
+            >📤Image Upload</label
+          >
+        </div>
+        <!-- dropdown attachments -->
+        <div class="dropdown">
+          <input type="checkbox" id="attachments" />
+          <label
+            for="attachments"
+            [ngClass]="{ inactive: !selected_obj['upload'] }"
+            >📌Attachments({{ uploaded_images.length }})</label
+          >
+          <div
+            #attachments_container
+            class="dropdown-content attachments"
+          ></div>
+        </div>
+        <div class="dropdown sent" (click)="submit()">
+          <label [ngClass]="{ inactive: !is_sendReady }"
+            >{{ options_model }} ➤</label
+          >
+        </div>
+      </section>
     </div>
   </div>
   <div class="footer"></div>

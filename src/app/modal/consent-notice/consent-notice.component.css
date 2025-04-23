@@ -1,0 +1,49 @@
+main {
+  width: 100%;
+  height: fit-content;
+  max-height: 100%;
+  overflow: overlay;
+}
+
+div.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+div.container > section {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+div.container > section.header {
+  padding: 1rem;
+}
+
+div.container > section.header > h3 {
+  font-weight: bold;
+  margin: 0;
+}
+
+div.container > section.content {
+  padding: 0 3rem;
+}
+
+div.container > section.content ul li {
+  line-height: 2rem;
+}
+
+div.container > section.content ul li b.red_attention {
+  color: red;
+}
+
+div.container > section.action {
+  width: calc(100% - 6rem);
+  border-top: rgba(0, 0, 0, 0.2) 1px solid;
+  height: 3rem;
+  margin-top: 1rem;
+  cursor: pointer;
+}

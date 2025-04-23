@@ -6,14 +6,18 @@
   --font-family: "Fira Code", "Noto Sans Mono", "Consolas", "Menlo";
   interpolate-size: allow-keywords;
   /* color */
-  --menu-width: 260px;
-  --chatbox-width: 800px;
+  --menu-width: 500px;
+  --chatbox-width: 1000px;
   --textarea-max-height: 300px;
   --svg-rem: 24px;
   --yellow-ey: #ffe600;
+  --yellow-600: #cbb919;
+  --yellow-100: #f9f09f;
   --gray-ey: #2e2e38;
   --gray-900: #171717;
   --gray-700: #424242;
+  --gray-600: #7d7b7b;
+  --gray-100: #f1f1f1;
   --border-color: #e3e3e3;
 }
 
@@ -23,28 +27,47 @@
   font-family: var(--font-family);
   margin: 0;
   padding: 0;
-  user-select: none;
   box-sizing: border-box;
-  scrollbar-color: var(--gray-700) transparent;
+  scrollbar-color: var(--gray-100) transparent;
   border: 0 solid var(--border-color);
+  white-space: normal;
 }
 
 html {
   font-size: 14px;
-  line-height: 1;
+  line-height: normal;
   /* Aspect ratio */
 }
 
 ul,
 ol {
   padding-inline-start: 1rem;
+  transition: height 0.2s ease-in-out;
   li {
-    line-height: 1.5rem;
+    line-height: normal;
   }
 }
 
 a {
   text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span {
+  line-height: normal;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+pre {
+  line-height: normal;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
 }
 
 svg {
@@ -73,38 +96,195 @@ input {
   outline: none;
 }
 
-details {
-  height: max-content;
-  overflow: hidden;
-  transition: all 0.5s ease-in-out;
-  ::marker {
-    content: "";
-  }
-}
-
 ::-webkit-scrollbar {
   display: none;
 }
 
-/* ######### */
-/* Scroll-driven animations */
-/* .anchor_container {
-  overflow: overlay;
-  position: relative;
-  .anchor {
-    width: fit-content;
-    font-size: 10rem;
-    background-color: yellow;
-    anchor-name: --my-anchor;
-    anchor-scope: --my-anchor;
-    .popover {
-      font-size: 1rem;
-      background-color: aquamarine;
-      position: absolute;
-      position-anchor: --my-anchor;
-      position-area: top right;
-      position-try: most-width flip-block, flip-inline, flip-start;
-      position-visibility: no-overflow;
+/* ================================================ */
+/* ================================================ */
+/* ================================================ */
+/* shared css */
+div.loading {
+  width: 100%;
+  padding: 0.5rem;
+  div.dots_loading {
+    height: 20px;
+    aspect-ratio: 2.5;
+    --_g: no-repeat
+      radial-gradient(farthest-side, rgba(0, 0, 0, 0.4) 80%, transparent);
+    background: var(--_g), var(--_g), var(--_g), var(--_g);
+    background-size: 15% 40%;
+    animation: dots 1s infinite linear alternate;
+    div.dots_loading_w {
+      height: 20px;
+      aspect-ratio: 2.5;
+      --_g: no-repeat
+        radial-gradient(
+          farthest-side,
+          rgba(255, 255, 255, 0.6) 80%,
+          transparent
+        );
+      background: var(--_g), var(--_g), var(--_g), var(--_g);
+      background-size: 15% 40%;
+      animation: dots 1s infinite linear alternate;
     }
   }
-} */
+}
+
+.custom-toast {
+  position: fixed;
+  bottom: 10rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #323232;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  font-size: 14px;
+  opacity: 0;
+  z-index: 9999;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+.custom-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.custom-toast.hide {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-20px);
+}
+
+/* upload */
+section.upload_container {
+  display: inline-block;
+  position: relative;
+  width: fit-content;
+  padding: 0.5rem;
+}
+img.upload {
+  width: fit-content;
+  height: fit-content;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+button.delete_uploaded {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1rem;
+  height: 1rem;
+  background: rgba(255, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 17px;
+  z-index: 10;
+  line-height: 0;
+}
+/* ================================================ */
+/* ================================================ */
+/* ================================================ */
+
+/* ######### */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -45%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -45%);
+  }
+}
+
+@keyframes backdropFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes backdropFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes dots {
+  0%,
+  5% {
+    background-position: calc(0 * 100% / 3) 50%, calc(1 * 100% / 3) 50%,
+      calc(2 * 100% / 3) 50%, calc(3 * 100% / 3) 50%;
+  }
+  12.5% {
+    background-position: calc(0 * 100% / 3) 0, calc(1 * 100% / 3) 50%,
+      calc(2 * 100% / 3) 50%, calc(3 * 100% / 3) 50%;
+  }
+  25% {
+    background-position: calc(0 * 100% / 3) 0, calc(1 * 100% / 3) 0,
+      calc(2 * 100% / 3) 50%, calc(3 * 100% / 3) 50%;
+  }
+  37.5% {
+    background-position: calc(0 * 100% / 3) 100%, calc(1 * 100% / 3) 0,
+      calc(2 * 100% / 3) 0, calc(3 * 100% / 3) 50%;
+  }
+  50% {
+    background-position: calc(0 * 100% / 3) 100%, calc(1 * 100% / 3) 100%,
+      calc(2 * 100% / 3) 0, calc(3 * 100% / 3) 0;
+  }
+  62.5% {
+    background-position: calc(0 * 100% / 3) 50%, calc(1 * 100% / 3) 100%,
+      calc(2 * 100% / 3) 100%, calc(3 * 100% / 3) 0;
+  }
+  75% {
+    background-position: calc(0 * 100% / 3) 50%, calc(1 * 100% / 3) 50%,
+      calc(2 * 100% / 3) 100%, calc(3 * 100% / 3) 100%;
+  }
+  87.5% {
+    background-position: calc(0 * 100% / 3) 50%, calc(1 * 100% / 3) 50%,
+      calc(2 * 100% / 3) 50%, calc(3 * 100% / 3) 100%;
+  }
+  95%,
+  100% {
+    background-position: calc(0 * 100% / 3) 50%, calc(1 * 100% / 3) 50%,
+      calc(2 * 100% / 3) 50%, calc(3 * 100% / 3) 50%;
+  }
+}
+
+/* animate */
+.modal-fade-in {
+  animation: fadeIn 0.2s ease forwards;
+}
+
+.modal-fade-out {
+  animation: fadeOut 0.2s ease forwards;
+}
+
+.backdrop-fade-in {
+  animation: backdropFadeIn 0.2s ease forwards;
+}
+
+.backdrop-fade-out {
+  animation: backdropFadeOut 0.2s ease forwards;
+}

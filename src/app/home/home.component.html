@@ -1,3 +1,8 @@
 <app-menu></app-menu>
-<app-home-message></app-home-message>
-<!-- <app-chat-box></app-chat-box> -->
+<ng-container *ngIf="display_homepage; else showChat">
+  <app-home-message></app-home-message>
+</ng-container>
+
+<ng-template #showChat>
+  <app-chat-box></app-chat-box>
+</ng-template>

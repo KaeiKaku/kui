@@ -7,33 +7,41 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class ChatgptService {
-  _currentApiUrl: string = `${environment.apiBaseURL}/${environment.endPoint}`;
+  currentApiUrl: string = `${environment.apiBaseURL}/${environment.endPoint}`;
 
   constructor(private http: HttpClient) {}
 
-  getAuthentication(): Observable<any> {
-    return this.http.get(
-      `${environment.apiBaseURL}/${environment.endPoint}/authenticate`
-    );
-  }
-
-  get_ng_config(): Observable<any> {
+  get_ng_status(): Observable<any> {
     return this.http.get(`/configuration/status.json`);
   }
 
-  get_config(): Observable<any> {
-    return this.http.get(`${this._currentApiUrl}/configuration`);
+  get(api_suffix: string): Observable<any> {
+    return this.http.get(`${this.currentApiUrl}/${api_suffix}`);
   }
 
-  // ask(url: string, data: any): Observable<any> {
-  //   return this.http.post(url, { data });
-  // }
+  post(
+    api_suffix: string,
+    data: any,
+    useJsonHeader?: boolean
+  ): Observable<any> {
+    const headers = useJsonHeader
+      ? new HttpHeaders({ 'Content-Type': 'application/json' })
+      : undefined;
+    return this.http.post(
+      `${environment.apiBaseURL}/${environment.endPoint}/${api_suffix}`,
+      useJsonHeader ? data : { data },
+      headers ? { headers } : undefined
+    );
+  }
 
-  // comment(url: string, data: any): Observable<any> {
-  //   return this.http.post(url, data, {
-  //     headers: new HttpHeaders({
-  //       'Content-Type': 'application/json',
-  //     }),
-  //   });
-  // }
+  async steam(api_suffix: string, header: any, data: any): Promise<Response> {
+    return await fetch(
+      `${environment.apiBaseURL}/${environment.endPoint}/${api_suffix}`,
+      {
+        method: 'POST',
+        headers: header,
+        body: JSON.stringify({ ...data }),
+      }
+    );
+  }
 }

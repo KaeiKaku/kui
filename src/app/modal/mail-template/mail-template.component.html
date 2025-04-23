@@ -1,0 +1,21 @@
+<section class="content">
+  <pre
+    #preContent
+    class="markdown-body"
+    [innerHTML]="mail_template | mdToHtml"
+  ></pre>
+  <div class="loading" *ngIf="is_loading">
+    <div class="dots_loading"></div>
+  </div>
+</section>
+<section class="actions">
+  <button [disabled]="is_loading" (click)="copy_template()">
+    テンプレート内容をコピー
+  </button>
+  <button cdkFocusInitial [disabled]="is_loading">
+    <a [href]="'mailto:' + mail_address + '?subject=BrainHub経由の問い合わせ'"
+      >メールを開く</a
+    >
+  </button>
+  <button (click)="close()">close</button>
+</section>

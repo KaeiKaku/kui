@@ -1,33 +1,60 @@
 <main>
   <div class="header">
-    <img src="ey_logo.png" alt="image" />
-    <section class="title" *ngIf="kui$ | async as kui">
-      <h3>{{ kui["name"] }}</h3>
-      <h4 *ngIf="qabot_page_list.length > 0">
-        {{ qabot_page_list[0]["page_title"] }}
+    <img src="logo.png" alt="image" />
+    <section>
+      <h3>QABot</h3>
+      <h4 *ngIf="render$ | async as render">
+        {{ render["page_title"] }}
       </h4>
     </section>
   </div>
-  <div class="body">
-    @for (category of qabot_category_list; track $index) {
-    <section class="category">
-      <details *ngIf="kui$ | async as kui">
-        <summary
-          [routerLink]="[
-            '/' + kui['current_page'] + '/' + (category | parseObj).key
-          ]"
-          routerLinkActive="active"
-        >
-          {{ (category | parseObj).key }}
-        </summary>
-        <div class="subfolder"><p>subfolder1</p></div>
-        <div class="subfolder"><p>subfolder2</p></div>
-        <div class="subfolder"><p>subfolder3</p></div>
-        <div class="subfolder"><p>subfolder4</p></div>
-        <div class="subfolder"><p>subfolder5</p></div>
-        <div class="subfolder"><p>subfolder6</p></div>
-      </details>
-    </section>
-    }
+  <div class="body" *ngIf="render$ | async as render">
+    <div
+      class="tree"
+      [ngClass]="{
+        notdisplay: (render['category_dict'] | parseObj).value['notdisplay']
+      }"
+      *ngFor="let category of category_list; trackBy: trackByFn"
+      [routerLink]="['/' + render['page'] + '/' + (category | parseObj).key]"
+      routerLinkActive="active"
+    >
+      <ul *ngIf="category | parseObj as parsed_category">
+        <li>
+          <p>
+            {{ parsed_category.value["category_name"] }}
+            <input
+              type="checkbox"
+              *ngIf="parsed_category.value['_sub_folders_length'] > 0"
+              [checked]="
+                selected_subforlders.get(parsed_category.key + '_all_selected')
+              "
+              (change)="
+                toggle_single(
+                  category,
+                  parsed_category.value['_sub_folders'],
+                  $event
+                )
+              "
+            />
+          </p>
+          <ul class="subtree" routerLinkActive="active">
+            <li
+              *ngFor="
+                let sub_folder of parsed_category.value['_sub_folders'];
+                trackBy: trackByFnSubfolder
+              "
+            >
+              <label
+                ><span>{{ sub_folder }}</span>
+                <input
+                  type="checkbox"
+                  [checked]="selected_subforlders.get(sub_folder)"
+                  (change)="toggle_single(category, [sub_folder], $event)"
+              /></label>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
   </div>
 </main>

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, distinctUntilChanged, map, Observable } from 'rxjs';
 
+const NotGiven = Symbol('NotGiven');
+
 @Injectable({
   providedIn: 'root',
 })
@@ -71,12 +73,17 @@ export class StatusService {
     }
   }
 
+  get_status_snapshot(path: string): any | undefined {
+    return this._get_patch_value_bypath({ ...this.status }, path);
+  }
+
   private _get_patch_value_bypath(
     status_record: Record<string, any>,
     path: string,
-    updated_Status: any = undefined
+    updated_Status: any = NotGiven
   ): any | undefined {
     if (typeof path !== 'string') throw new Error('invalid path string.');
+    if (!status_record) return undefined;
 
     const paths = path.split('.');
     const str = paths.shift();
@@ -85,7 +92,7 @@ export class StatusService {
       return undefined;
     }
     // If the path is not yet complete, recursively process the next level
-    if (paths.length > 0) {
+    if (paths.length > 0 && status_record[str]) {
       return this._get_patch_value_bypath(
         status_record[str],
         paths.join('.'),
@@ -93,16 +100,18 @@ export class StatusService {
       );
     }
     // If there is an update status, handle the update logic
-    if (!updated_Status) {
+    if (updated_Status === NotGiven) {
       return status_record[str];
     }
     // update logic
-    if (typeof status_record[str] === 'object') {
+    if (!updated_Status || Object.keys(updated_Status).length === 0) {
+      delete status_record[str];
+    } else if (
+      typeof status_record[str] === 'object' &&
       typeof updated_Status === 'object'
-        ? (status_record[str] = { ...status_record[str], ...updated_Status })
-        : status_record[str];
+    ) {
+      status_record[str] = { ...status_record[str], ...updated_Status };
     } else {
-      // If the target is not an object, overwrite directly
       status_record[str] = updated_Status;
     }
   }

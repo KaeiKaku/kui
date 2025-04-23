@@ -3,15 +3,17 @@
   width: var(--menu-width);
   height: 100dvh;
   overflow: hidden;
-  transition: width 0.5s;
-  @media (max-width: 1060px) {
+  transition: width 0.2s;
+  background-color: var(--gray-100);
+  @media (max-width: 1600px) {
     width: 0;
-    transition: width 0.5s;
+    transition: width 0.2s;
   }
 }
 
 main {
   display: flex;
+  width: 100%;
   flex-direction: column;
   div.header {
     height: 4rem;
@@ -32,47 +34,90 @@ main {
       h3 {
         margin-left: 0.5rem;
         white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
       }
       h4 {
         margin-left: 0.5rem;
         white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
       }
     }
   }
   div.body {
     height: calc(100dvh - 4rem);
     overflow: overlay;
-    background-color: var(--gray-900);
-    section.category {
-      details {
-        padding: 0 1rem;
-        summary {
-          border-radius: 0.5rem;
-          padding: 0.5rem;
-          color: white;
-          line-height: 2;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          cursor: pointer;
-          &:hover {
-            background-color: var(--gray-ey);
+    border-right: 1px solid var(--border-color);
+    div.tree {
+      padding: 1rem;
+      margin: 1rem 1rem 1rem 0;
+      color: white;
+      overflow: hidden;
+      cursor: pointer;
+      background-color: var(--gray-900);
+      transition: all 0.2s ease-in-out;
+      &:hover {
+        background-color: var(--gray-ey);
+        box-shadow: 0px 0px 1px 1px var(--gray-900);
+      }
+      &.active {
+        background-color: var(--yellow-ey);
+        padding: 1.5rem 1rem;
+        color: unset;
+        transition: all 0.2s ease-in-out;
+      }
+      &.notdisplay {
+        display: none;
+      }
+      ul {
+        list-style-type: none;
+        li {
+          p {
+            display: flex;
+            width: 100%;
+            padding: 0 5px;
+            line-height: 2;
+            cursor: pointer;
+            &::before {
+              content: "📁";
+            }
+            input {
+              margin-left: auto;
+            }
           }
-          &.active {
-            background-color: var(--yellow-ey);
-            color: unset;
+          ul.subtree {
+            height: 0;
+            visibility: hidden;
+            transition: all 0.2s ease-in-out;
+            li {
+              display: inline-flex;
+              width: 100%;
+              height: 2rem;
+              align-items: center;
+              padding: 0 5px;
+              line-height: 2;
+              &:hover {
+                background-color: var(--yellow-600);
+              }
+              &::before {
+                content: "📃";
+              }
+              label {
+                display: inline-flex;
+                align-items: center;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                white-space: nowrap;
+                cursor: pointer;
+                input {
+                  margin-left: auto;
+                }
+              }
+            }
+            &.active {
+              height: auto;
+              visibility: unset;
+              transition: all 0.2s ease-in-out;
+            }
           }
-          summary.active:hover {
-            background-color: unset;
-          }
-        }
-        div.subfolder {
-          padding: 0.5rem;
-          color: white;
         }
       }
     }

@@ -1,0 +1,22 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+section.content {
+  overflow: overlay;
+}
+section.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  button {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    &:hover {
+      background-color: var(--yellow-100);
+    }
+  }
+}

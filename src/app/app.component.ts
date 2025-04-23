@@ -4,6 +4,14 @@ import { ChatgptService } from './service/chatgpt.service';
 import { StatusService } from './service/status.service';
 import { concatMap, map } from 'rxjs';
 
+const ng_config = {
+  kui: {
+    name: 'QABot',
+    render: {},
+    selected: {},
+  },
+};
+
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
@@ -12,21 +20,15 @@ import { concatMap, map } from 'rxjs';
 })
 export class AppComponent {
   _configLoaded: boolean = false;
-  _is_checking_authorized: boolean = true;
+  _is_loading: boolean = true;
   constructor(
     private readonly Chatgptservice: ChatgptService,
     private readonly statusService: StatusService
   ) {
-    this.Chatgptservice.get_ng_config()
-      .pipe(
-        concatMap((ng_config: any) => {
-          return this.Chatgptservice.get_config().pipe(
-            map((conf: any) => ({ ng_config, conf }))
-          );
-        })
-      )
+    this.Chatgptservice.get('configuration')
+      .pipe(map((conf: any) => ({ ng_config, conf })))
       .subscribe(({ ng_config, conf }) => {
-        this._is_checking_authorized = false;
+        this._is_loading = false;
         if (conf) {
           const merged_conf = Object.assign(ng_config, conf);
           this.statusService.init_status(merged_conf);
